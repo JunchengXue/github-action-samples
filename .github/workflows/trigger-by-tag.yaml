@@ -28,18 +28,13 @@ jobs:
         GITHUB_CONTEXT: ${{ toJson(github) }}
       run: |
         echo "$GITHUB_CONTEXT"
-    - name: Set env
-      run: echo "${GITHUB_REF#refs/tags/*/}"      
-    - name: Set env2
+    - name: trigger by tag
+      if: startsWith(github.ref, 'refs/tags/v')
       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-   
-    - name: aaa
-      if: ${{ ! inputs.version }}
-      run: echo "TAG"
-    - name: aaa
-      if: ${{ ! inputs.version }}
-      run: echo "TAG"
-
+    - name: trigger by 
+      if: ${{ ! startsWith(github.ref, 'refs/tags/v')  }}
+      run: echo "RELEASE_VERSION=${{inputs.version}}" >> $GITHUB_ENV
+       
     - name: github environment
       run: |
           git_hash=$(git rev-parse --short HEAD) 
@@ -51,7 +46,7 @@ jobs:
           echo '${{  toJSON(env) }}' 
           echo "::notice ::Git Short Sha: ${{env.GIT_SHORT_SHA}}"
           echo "::notice ::Git Branch: ${{env.GIT_BRANCH}}"
-          echo "::notice ::Semantic release number: ${{ inputs.version }}"
+          echo "::notice ::Semantic release number: ${{ env.RELEASE_VERSION }}"
 
     - name: Install poetry
       run: pipx install poetry
@@ -59,4 +54,4 @@ jobs:
       with:
         python-version: '3.9'
     - name: Pump version number
-      run: echo ${{ inputs.version }}
+      run: echo ${{ env.RELEASE_VERSION }}
