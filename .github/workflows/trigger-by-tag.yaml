@@ -23,10 +23,12 @@ jobs:
       INVOKE_DEPLOY: ${{ github.event.inputs.invokeDeploy || 'false' }}
     steps:
     - uses: actions/checkout@v3
-    - id: echo event
-      run: echo ${github.event}
-
-
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: |
+        echo "$GITHUB_CONTEXT"
+   
     - name: aaa
       if: ${{ ! inputs.version }}
       run: echo "TAG"
