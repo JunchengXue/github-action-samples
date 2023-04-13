@@ -29,10 +29,10 @@ jobs:
 
     - name: aaa
       if: ${{ ! inputs.version }}
-      run: echo "TAG=${{}}"
+      run: echo "TAG"
     - name: aaa
       if: ${{ ! inputs.version }}
-      run: echo "TAG=${{}}"
+      run: echo "TAG"
 
     - name: github environment
       run: |
